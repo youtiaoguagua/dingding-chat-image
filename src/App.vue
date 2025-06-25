@@ -5,7 +5,7 @@
       <div class="control-panel">
         <h2>聊天设置</h2>
         
-        <el-collapse v-model="activeCollapse" accordion>
+        <el-collapse v-model="activeCollapse">
           <!-- 颜色设置 -->
           <el-collapse-item title="颜色设置" name="colors">
             <div class="color-settings">
