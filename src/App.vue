@@ -435,7 +435,7 @@ import {
 } from '@element-plus/icons-vue'
 import html2canvas from 'html2canvas'
 
-const defaultAweiUrl = "https://img10.360buyimg.com/ddimg/jfs/t1/305052/18/13594/23198/685ca443F3774d9ab/967d365cbe09ae76.jpg"
+const defaultAweiUrl = "https://img10.360buyimg.com/ddimg/jfs/t1/301334/13/18079/21863/685d19afF1b37a23a/61e6e7ebfc4fdab9.jpg"
 
 // 响应式数据
 const settings = reactive({
