@@ -462,6 +462,267 @@ h2 {
   }
 }
 
+// 头像设置表单优化样式
+.avatar-setting-container {
+  @include flex-column;
+  gap: 16px;
+}
+
+.avatar-radio-group {
+  width: 100%;
+  
+  .el-radio-button {
+    flex: 1;
+  }
+  
+  .el-radio-button__inner {
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+}
+
+.avatar-preview-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: $bg-lighter;
+  border-radius: $border-radius;
+  border: 1px solid $border-light;
+}
+
+.avatar-preview-container {
+  flex-shrink: 0;
+  
+  .el-avatar {
+    @include card-shadow;
+    transition: transform $transition;
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.avatar-preview-label {
+  flex: 1;
+  font-size: 13px;
+  color: $text-light;
+  font-weight: bold;
+}
+
+.avatar-custom-input {
+  margin-top: 12px;
+  
+  .input-tip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: $text-muted;
+    
+    .el-icon {
+      font-size: 14px;
+    }
+  }
+  
+  .text-avatar-colors {
+    margin-top: 16px;
+    padding: 12px;
+    background: $bg-lighter;
+    border-radius: $border-radius;
+    border: 1px solid $border-light;
+    
+    .color-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 12px;
+      
+      .color-item {
+        flex: 1;
+        @include flex-column;
+        gap: 6px;
+        
+        label {
+          font-size: 12px;
+          font-weight: bold;
+          color: $text-light;
+        }
+        
+        .color-input-group {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          
+          .el-color-picker {
+            flex-shrink: 0;
+          }
+          
+          .el-input {
+            flex: 1;
+            
+            .el-input__wrapper {
+              font-size: 12px;
+            }
+          }
+        }
+      }
+    }
+    
+    .color-presets {
+      .preset-label {
+        font-size: 12px;
+        color: $text-light;
+        font-weight: bold;
+        margin-bottom: 8px;
+        display: block;
+      }
+      
+      .preset-colors {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        
+        .preset-color {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          @include flex-center;
+          cursor: pointer;
+          font-size: 12px;
+          font-weight: bold;
+          transition: all $transition;
+          border: 2px solid transparent;
+          @include button-shadow;
+          
+          &:hover {
+            transform: scale(1.1);
+            @include button-shadow-hover;
+            border-color: rgba(255,255,255,0.3);
+          }
+          
+          &:active {
+            transform: scale(0.95);
+          }
+        }
+      }
+    }
+  }
+}
+
+.avatar-upload-section {
+  margin-top: 12px;
+  
+  .custom-avatar-uploader {
+    width: 100%;
+    
+    .el-upload {
+      width: 100%;
+    }
+    
+    .el-upload-dragger {
+      width: 100%;
+      height: 120px;
+      border-radius: $border-radius;
+      border: 2px dashed $border-color;
+      background: $bg-lighter;
+      transition: all $transition;
+      
+      &:hover {
+        border-color: $primary-color;
+        background: $bg-blue-light;
+      }
+    }
+  }
+  
+  .upload-area {
+    @include flex-column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 8px;
+    
+    .upload-icon {
+      font-size: 32px;
+      color: $text-muted;
+    }
+    
+    .upload-text {
+      font-size: 14px;
+      color: $text-light;
+      font-weight: bold;
+    }
+    
+    .upload-hint {
+      font-size: 12px;
+      color: $text-muted;
+    }
+  }
+  
+  .uploaded-image {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: $border-radius;
+    }
+    
+    .image-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      @include flex-column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity $transition;
+      border-radius: $border-radius;
+      
+      .el-icon {
+        font-size: 20px;
+      }
+      
+      span {
+        font-size: 12px;
+      }
+    }
+    
+    &:hover .image-overlay {
+      opacity: 1;
+    }
+  }
+  
+  .delete-uploaded-avatar {
+    width: 100%;
+    margin-top: 8px;
+  }
+}
+
+.default-avatar-tip {
+  margin-top: 12px;
+  
+  .el-alert {
+    --el-alert-padding: 8px 12px;
+    --el-alert-border-radius: #{$border-radius};
+    
+    .el-alert__content {
+      font-size: 12px;
+    }
+  }
+}
+
 // 响应式设计
 @media (max-width: 768px) {
   .container {
@@ -480,5 +741,35 @@ h2 {
   
   .control-panel {
     // width: 100%;
+  }
+  
+  .avatar-preview-section {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  .avatar-radio-group {
+    .el-radio-button__inner {
+      font-size: 11px;
+      padding: 6px 8px;
+    }
+  }
+  
+  .text-avatar-colors {
+    .color-row {
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .preset-colors {
+      justify-content: center;
+      
+      .preset-color {
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+      }
+    }
   }
 } 

@@ -170,7 +170,16 @@
               >
                 <div class="avatar">
                   <img v-if="getAvatarUrl(message)" :src="getAvatarUrl(message)" :alt="message.username" />
-                  <div v-else class="default-avatar">{{ splitUsername(message.username, message.customText) }}</div>
+                  <div 
+                    v-else 
+                    class="default-avatar"
+                    :style="{
+                      backgroundColor: message.textAvatarBgColor || '#007AFF',
+                      color: message.textAvatarTextColor || '#ffffff'
+                    }"
+                  >
+                    {{ splitUsername(message.username, message.customText) }}
+                  </div>
                 </div>
                 <div class="message-content">
                   <div class="username">{{ message.username }}</div>
@@ -217,69 +226,189 @@
           </el-select>
         </el-form-item>
         <el-form-item label="头像设置">
-          <el-radio-group v-model="newMessage.avatarType" @change="updateAvatarPreview">
-            <el-radio label="default">文字头像</el-radio>
-            <el-radio label="custom">上传头像</el-radio>
-            <el-radio label="none" :disabled="!hasDefaultAvatar">使用默认头像</el-radio>
-          </el-radio-group>
-          
-          <div v-if="newMessage.avatarType === 'custom'" style="margin-top: 12px;">
-            <el-upload
-              class="avatar-uploader"
-              :auto-upload="false"
-              :show-file-list="false"
-              accept="image/*"
-              @change="handleCustomAvatarChange"
-            >
-              <img v-if="newMessage.avatarUrl" :src="newMessage.avatarUrl" class="avatar" />
-              <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-            </el-upload>
-            <el-button 
-              v-if="newMessage.avatarUrl"
-              type="danger" 
-              size="small" 
-              @click="deleteCustomAvatar"
-              class="delete-avatar-btn"
-            >
-              <el-icon><Delete /></el-icon>
-              删除头像
-            </el-button>
-          </div>
-          
-          <div v-if="newMessage.avatarType === 'default'" style="margin-top: 12px;">
-            <el-input 
-              v-model="newMessage.customText" 
-              placeholder="自定义文字（留空则使用用户名）" 
-              maxlength="4"
-              show-word-limit
-            />
-            <div style="margin-top: 8px; font-size: 12px; color: #666;">
-              最多4个字符，留空则自动使用用户名后两位
+          <div class="avatar-setting-container">
+            <el-radio-group v-model="newMessage.avatarType" @change="updateAvatarPreview" class="avatar-radio-group">
+              <el-radio-button label="default">文字头像</el-radio-button>
+              <el-radio-button label="custom">上传头像</el-radio-button>
+              <el-radio-button label="none" :disabled="!hasDefaultAvatar">默认头像</el-radio-button>
+            </el-radio-group>
+            
+            <!-- 头像预览区域 -->
+            <div class="avatar-preview-section">
+              <div class="avatar-preview-container">
+                <el-avatar 
+                  :size="50" 
+                  v-if="newMessage.avatarType === 'none' && getAvatarUrl({ isSelf: newMessage.isSelf, avatarUrl: null })"
+                  :src="getAvatarUrl({ isSelf: newMessage.isSelf, avatarUrl: null })"
+                >
+                  <el-icon><User /></el-icon>
+                </el-avatar>
+                <el-avatar 
+                  :size="50" 
+                  v-else-if="newMessage.avatarType === 'default'"
+                  :style="{ 
+                    backgroundColor: newMessage.textAvatarBgColor, 
+                    color: newMessage.textAvatarTextColor, 
+                    fontSize: '16px', 
+                    fontWeight: 'bold' 
+                  }"
+                >
+                  {{ getAvatarPreviewText() }}
+                </el-avatar>
+                <el-avatar 
+                  :size="50" 
+                  v-else-if="newMessage.avatarType === 'custom' && newMessage.avatarUrl"
+                  :src="newMessage.avatarUrl"
+                >
+                  <el-icon><User /></el-icon>
+                </el-avatar>
+                <el-avatar 
+                  :size="50" 
+                  v-else
+                  :style="{ backgroundColor: '#f0f0f0', color: '#999' }"
+                >
+                  <el-icon><Plus /></el-icon>
+                </el-avatar>
+              </div>
+              <div class="avatar-preview-label">{{ getAvatarTypeLabel() }}</div>
             </div>
           </div>
           
-          <div v-else class="avatar-preview-modal">
-            <el-avatar 
-              :size="40" 
-              v-if="newMessage.avatarType === 'none' && getAvatarUrl({ isSelf: newMessage.isSelf, avatarUrl: null })"
-              :src="getAvatarUrl({ isSelf: newMessage.isSelf, avatarUrl: null })"
-            >
-              <el-icon><User /></el-icon>
-            </el-avatar>
-            <el-avatar 
-              :size="40" 
-              v-else-if="newMessage.avatarType === 'default'"
-              :style="{ backgroundColor: '#007AFF', color: '#ffffff' }"
-            >
-              {{ getAvatarPreviewText() }}
-            </el-avatar>
-            <el-avatar 
-              :size="40" 
-              v-else
-            >
-              {{ getAvatarPreviewText() }}
-            </el-avatar>
-          </div>
+          <!-- 文字头像自定义输入 -->
+          <el-collapse-transition>
+            <div v-if="newMessage.avatarType === 'default'" class="avatar-custom-input">
+              <el-input 
+                v-model="newMessage.customText" 
+                placeholder="自定义文字（留空则使用用户名）" 
+                maxlength="4"
+                show-word-limit
+                size="small"
+              />
+              <div class="input-tip">
+                <el-icon><InfoFilled /></el-icon>
+                最多4个字符，留空则自动使用用户名后两位
+              </div>
+              
+              <!-- 文字头像颜色设置 -->
+              <div class="text-avatar-colors">
+                <div class="color-row">
+                  <div class="color-item">
+                    <label>背景颜色</label>
+                    <div class="color-input-group">
+                      <el-color-picker 
+                        v-model="newMessage.textAvatarBgColor" 
+                        size="small"
+                        @change="updateAvatarPreview"
+                      />
+                      <el-input 
+                        v-model="newMessage.textAvatarBgColor" 
+                        size="small"
+                        placeholder="#007AFF"
+                        @input="updateAvatarPreview"
+                      />
+                    </div>
+                  </div>
+                  <div class="color-item">
+                    <label>文字颜色</label>
+                    <div class="color-input-group">
+                      <el-color-picker 
+                        v-model="newMessage.textAvatarTextColor" 
+                        size="small"
+                        @change="updateAvatarPreview"
+                      />
+                      <el-input 
+                        v-model="newMessage.textAvatarTextColor" 
+                        size="small"
+                        placeholder="#ffffff"
+                        @input="updateAvatarPreview"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="color-presets">
+                  <span class="preset-label">快速选择：</span>
+                  <div class="preset-colors">
+                    <div 
+                      v-for="preset in colorPresets" 
+                      :key="preset.name"
+                      class="preset-color"
+                      :style="{ backgroundColor: preset.bg, color: preset.text }"
+                      @click="applyColorPreset(preset)"
+                      :title="preset.name"
+                    >
+                      {{ getAvatarPreviewText().slice(0, 1) }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </el-collapse-transition>
+          
+          <!-- 上传头像区域 -->
+          <el-collapse-transition>
+            <div v-if="newMessage.avatarType === 'custom'" class="avatar-upload-section">
+              <el-upload
+                class="custom-avatar-uploader"
+                :auto-upload="false"
+                :show-file-list="false"
+                accept="image/*"
+                @change="handleCustomAvatarChange"
+                drag
+              >
+                <div v-if="!newMessage.avatarUrl" class="upload-area">
+                  <el-icon class="upload-icon"><UploadFilled /></el-icon>
+                  <div class="upload-text">点击或拖拽上传头像</div>
+                  <div class="upload-hint">支持 jpg、png 格式，建议尺寸 1:1</div>
+                </div>
+                <div v-else class="uploaded-image">
+                  <img :src="newMessage.avatarUrl" alt="上传的头像" />
+                  <div class="image-overlay">
+                    <el-icon><Edit /></el-icon>
+                    <span>点击重新上传</span>
+                  </div>
+                </div>
+              </el-upload>
+              <el-button 
+                v-if="newMessage.avatarUrl"
+                type="danger" 
+                size="small" 
+                @click="deleteCustomAvatar"
+                class="delete-uploaded-avatar"
+                plain
+              >
+                <el-icon><Delete /></el-icon>
+                删除头像
+              </el-button>
+            </div>
+          </el-collapse-transition>
+          
+          <!-- 默认头像提示 -->
+          <el-collapse-transition>
+            <div v-if="newMessage.avatarType === 'none'" class="default-avatar-tip">
+              <el-alert
+                v-if="!hasDefaultAvatar"
+                title="暂无默认头像"
+                type="warning"
+                :closable="false"
+                show-icon
+              >
+                <template #default>
+                  请先在左侧"头像设置"中上传{{ newMessage.isSelf ? '我的头像' : '他人头像' }}
+                </template>
+              </el-alert>
+              <el-alert
+                v-else
+                title="将使用默认头像"
+                type="info"
+                :closable="false"
+                show-icon
+              >
+                <template #default>
+                  使用左侧设置的{{ newMessage.isSelf ? '我的头像' : '他人头像' }}
+                </template>
+              </el-alert>
+            </div>
+          </el-collapse-transition>
         </el-form-item>
       </el-form>
       
@@ -299,6 +428,15 @@
 <script setup>
 import { ref, reactive, onMounted, computed, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
+import { 
+  Plus, 
+  Delete, 
+  User, 
+  ChatDotRound, 
+  Edit, 
+  UploadFilled, 
+  InfoFilled 
+} from '@element-plus/icons-vue'
 import html2canvas from 'html2canvas'
 
 // 响应式数据
@@ -329,10 +467,26 @@ const newMessage = reactive({
   isSelf: false,
   avatarType: 'default',
   avatarUrl: null,
-  customText: '' // 自定义文字头像
+  customText: '', // 自定义文字头像
+  textAvatarBgColor: '#007AFF', // 文字头像背景颜色
+  textAvatarTextColor: '#ffffff' // 文字头像文字颜色
 })
 
 const chatPreview = ref(null)
+
+// 文字头像颜色预设
+const colorPresets = [
+  { name: '经典蓝', bg: '#007AFF', text: '#ffffff' },
+  { name: '活力橙', bg: '#FF6B35', text: '#ffffff' },
+  { name: '清新绿', bg: '#28A745', text: '#ffffff' },
+  { name: '温暖红', bg: '#DC3545', text: '#ffffff' },
+  { name: '优雅紫', bg: '#6F42C1', text: '#ffffff' },
+  { name: '阳光黄', bg: '#FFC107', text: '#212529' },
+  { name: '天空蓝', bg: '#17A2B8', text: '#ffffff' },
+  { name: '玫瑰粉', bg: '#E83E8C', text: '#ffffff' },
+  { name: '深灰', bg: '#6C757D', text: '#ffffff' },
+  { name: '墨绿', bg: '#20C997', text: '#ffffff' }
+]
 
 // 计算属性
 const hasDefaultAvatar = computed(() => {
@@ -413,6 +567,8 @@ const editMessage = (index) => {
   } else if (msg.avatarUrl === 'default' || !msg.avatarUrl) {
     newMessage.avatarType = 'default'
     newMessage.customText = msg.customText || ''
+    newMessage.textAvatarBgColor = msg.textAvatarBgColor || '#007AFF'
+    newMessage.textAvatarTextColor = msg.textAvatarTextColor || '#ffffff'
   } else {
     newMessage.avatarType = 'custom'
     newMessage.avatarUrl = msg.avatarUrl
@@ -430,6 +586,8 @@ const openAddMessageModal = () => {
   newMessage.avatarType = 'default'
   newMessage.avatarUrl = null
   newMessage.customText = ''
+  newMessage.textAvatarBgColor = '#007AFF'
+  newMessage.textAvatarTextColor = '#ffffff'
   
   isEditing.value = false
   editingIndex.value = -1
@@ -463,12 +621,33 @@ const updateAvatarPreview = () => {
 const getAvatarPreviewText = () => {
   switch (newMessage.avatarType) {
     case 'default':
-      return newMessage.customText ? newMessage.customText.slice(0, 2) : '文字'
+      return newMessage.customText ? newMessage.customText.slice(0, 2) : splitUsername(newMessage.username, newMessage.customText)
     case 'none':
       return '默认'
+    case 'custom':
+      return '自定义'
     default:
       return '预览'
   }
+}
+
+const getAvatarTypeLabel = () => {
+  switch (newMessage.avatarType) {
+    case 'default':
+      return newMessage.customText ? `文字头像: ${newMessage.customText}` : '文字头像'
+    case 'none':
+      return hasDefaultAvatar.value ? '使用默认头像' : '暂无默认头像'
+    case 'custom':
+      return newMessage.avatarUrl ? '自定义头像' : '点击上传头像'
+    default:
+      return '头像预览'
+  }
+}
+
+const applyColorPreset = (preset) => {
+  newMessage.textAvatarBgColor = preset.bg
+  newMessage.textAvatarTextColor = preset.text
+  updateAvatarPreview()
 }
 
 const saveMessage = () => {
@@ -490,7 +669,9 @@ const saveMessage = () => {
     isSelf: newMessage.isSelf,
     timestamp: Date.now(),
     avatarUrl: avatarUrl,
-    customText: newMessage.customText
+    customText: newMessage.customText,
+    textAvatarBgColor: newMessage.textAvatarBgColor,
+    textAvatarTextColor: newMessage.textAvatarTextColor
   }
   
   if (isEditing.value) {
@@ -579,7 +760,9 @@ onMounted(() => {
       isSelf: false,
       timestamp: Date.now(),
       avatarUrl: settings.otherAvatarUrl,
-      customText: ''
+      customText: '',
+      textAvatarBgColor: '#007AFF',
+      textAvatarTextColor: '#ffffff'
     })
     currentMessageIndex.value = 0
   }
