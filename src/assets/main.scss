@@ -72,7 +72,7 @@ body {
 // 主样式
 .chat-generator {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  background: $primary-gradient;
+  // background: $primary-gradient;
   // height: calc(100vh - 76px);
   padding: 16px;
   display: flex;
@@ -80,8 +80,9 @@ body {
   padding-bottom: 60px;
   margin: 0;
   box-sizing: border-box;
-  height: 100vh;
+  min-height: 100vh;
   background: center/cover no-repeat url(https://img13.360buyimg.com/ddimg/jfs/t1/316982/12/11827/243153/685ca544F65424bf2/a8ad974f4587296f.jpg);
+  background-attachment: fixed;
 }
 
 .container {
@@ -474,7 +475,7 @@ h2 {
     background-repeat: no-repeat;
     background-attachment: fixed;
     height: 100%; // 使用100%避免移动端滑动时背景被覆盖
-    min-height: 100vh; // 确保最小高度
+    // min-height: 100vh; // 确保最小高度
   }
   
   .control-panel {
