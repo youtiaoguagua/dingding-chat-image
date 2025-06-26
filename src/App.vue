@@ -439,6 +439,8 @@ import {
 } from '@element-plus/icons-vue'
 import html2canvas from 'html2canvas'
 
+const defaultAweiUrl = "https://img10.360buyimg.com/ddimg/jfs/t1/305052/18/13594/23198/685ca443F3774d9ab/967d365cbe09ae76.jpg"
+
 // 响应式数据
 const settings = reactive({
   bgColor: '#f0f2f5',
@@ -449,7 +451,7 @@ const settings = reactive({
   textColorText: '#000000',
   groupName: '技术交流群',
   showGroupName: true,
-  otherAvatarUrl: 'https://img10.360buyimg.com/ddimg/jfs/t1/305052/18/13594/23198/685ca443F3774d9ab/967d365cbe09ae76.jpg',
+  otherAvatarUrl: defaultAweiUrl,
   selfAvatarUrl: null
 })
 
@@ -745,7 +747,14 @@ const downloadScreenshot = async () => {
 }
 
 const setAweiAvatar = () => {
-  settings.otherAvatarUrl = 'https://img10.360buyimg.com/ddimg/jfs/t1/305052/18/13594/23198/685ca443F3774d9ab/967d365cbe09ae76.jpg'
+  settings.otherAvatarUrl = defaultAweiUrl
+
+  messages.value.forEach(message => {
+    if (!message.isSelf) {
+      message.avatarUrl = defaultAweiUrl
+    }
+  })
+
   updatePreview()
   ElMessage.success('已设置阿伟头像')
 }
