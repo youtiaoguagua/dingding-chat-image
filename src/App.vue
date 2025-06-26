@@ -311,7 +311,7 @@ const settings = reactive({
   textColorText: '#000000',
   groupName: '技术交流群',
   showGroupName: true,
-  otherAvatarUrl: 'https://pic.rmb.bdstatic.com/bjh/3ee4dcfb73d/250625/a56433f186cb6fcebd2bacc3e001f066.jpeg',
+  otherAvatarUrl: 'https://img10.360buyimg.com/ddimg/jfs/t1/305052/18/13594/23198/685ca443F3774d9ab/967d365cbe09ae76.jpg',
   selfAvatarUrl: null
 })
 
@@ -564,7 +564,7 @@ const downloadScreenshot = async () => {
 }
 
 const setAweiAvatar = () => {
-  settings.otherAvatarUrl = 'https://pic.rmb.bdstatic.com/bjh/3ee4dcfb73d/250625/a56433f186cb6fcebd2bacc3e001f066.jpeg'
+  settings.otherAvatarUrl = 'https://img10.360buyimg.com/ddimg/jfs/t1/305052/18/13594/23198/685ca443F3774d9ab/967d365cbe09ae76.jpg'
   updatePreview()
   ElMessage.success('已设置阿伟头像')
 }

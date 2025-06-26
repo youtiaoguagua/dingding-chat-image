@@ -73,12 +73,15 @@ body {
 .chat-generator {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   background: $primary-gradient;
-  height: calc(100vh - 76px);
+  // height: calc(100vh - 76px);
   padding: 16px;
   display: flex;
   gap: 16px;
   padding-bottom: 60px;
   margin: 0;
+  box-sizing: border-box;
+  height: 100vh;
+  background: center/cover no-repeat url(https://img13.360buyimg.com/ddimg/jfs/t1/316982/12/11827/243153/685ca544F65424bf2/a8ad974f4587296f.jpg);
 }
 
 .container {
@@ -110,7 +113,7 @@ body {
 
 .preview-panel {
   flex: 2;
-  background: rgba(255,255,255,1);
+  background: rgba(255,255,255,0.9);
   border-radius: $border-radius;
   padding: 20px;
   @include card-shadow;
@@ -462,6 +465,16 @@ h2 {
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
+  }
+
+  .chat-generator {
+    background-image: url(https://img10.360buyimg.com/ddimg/jfs/t1/317220/9/11936/135047/685ca797F34074851/f3c0a145a7cd350a.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100%; // 使用100%避免移动端滑动时背景被覆盖
+    min-height: 100vh; // 确保最小高度
   }
   
   .control-panel {
