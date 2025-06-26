@@ -772,4 +772,40 @@ h2 {
       }
     }
   }
+  
+  .message-type-radio {
+    .el-radio-button__inner {
+      font-size: 12px;
+      padding: 8px 12px;
+    }
+  }
+}
+
+// 消息类型单选按钮样式
+.message-type-radio {
+  width: 100%;
+  
+  .el-radio-button {
+    flex: 1;
+  }
+  
+  .el-radio-button__inner {
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    padding: 10px 16px;
+    border-radius: $border-radius;
+    transition: all $transition;
+    
+    &:hover {
+      background: $bg-blue-light;
+    }
+  }
+  
+  .el-radio-button__original-radio:checked + .el-radio-button__inner {
+    background: $primary-color;
+    border-color: $primary-color;
+    color: white;
+    @include button-shadow-hover;
+  }
 } 

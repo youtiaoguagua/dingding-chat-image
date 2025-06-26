@@ -220,10 +220,10 @@
           />
         </el-form-item>
         <el-form-item label="消息类型">
-          <el-select v-model="newMessage.isSelf" style="width: 100%;">
-            <el-option label="我的消息" :value="true" />
-            <el-option label="他人消息" :value="false" />
-          </el-select>
+          <el-radio-group v-model="newMessage.isSelf" class="message-type-radio">
+            <el-radio-button :label="false">他人消息</el-radio-button>
+            <el-radio-button :label="true">我的消息</el-radio-button>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="头像设置">
           <div class="avatar-setting-container">
@@ -279,15 +279,11 @@
             <div v-if="newMessage.avatarType === 'default'" class="avatar-custom-input">
               <el-input 
                 v-model="newMessage.customText" 
-                placeholder="自定义文字（留空则使用用户名）" 
+                placeholder="自定义文字（留空则使用用户名）最多4个字符" 
                 maxlength="4"
                 show-word-limit
                 size="small"
               />
-              <div class="input-tip">
-                <el-icon><InfoFilled /></el-icon>
-                最多4个字符，留空则自动使用用户名后两位
-              </div>
               
               <!-- 文字头像颜色设置 -->
               <div class="text-avatar-colors">
